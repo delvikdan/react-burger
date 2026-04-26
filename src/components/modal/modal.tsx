@@ -6,6 +6,8 @@ import { ModalOverlay } from '@components/modal-overlay/modal-overlay';
 
 import styles from './modal.module.css';
 
+const modalsRoot = document.getElementById('modals')!;
+
 type TModalProps = {
   title: string;
   children: React.ReactNode;
@@ -55,6 +57,6 @@ export const Modal = ({ title, children, onClose }: TModalProps): React.JSX.Elem
         <div className={`${styles.content} p-10`}>{children}</div>
       </section>
     </>,
-    document.body
+    modalsRoot
   );
 };
