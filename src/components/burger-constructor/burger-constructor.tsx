@@ -4,21 +4,23 @@ import {
   CurrencyIcon,
   DragIcon,
 } from '@krgaa/react-developer-burger-ui-components';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+
+import { useAppDispatch, useAppSelector } from '@services/hooks';
+import { clearCurrentIngredient } from '@services/slices/ingredient-details-slice';
+import { createOrder } from '@services/slices/order-slice';
 
 import type { TIngredient } from '@utils/types';
 
 import styles from './burger-constructor.module.css';
 
-type TBurgerConstructorProps = {
-  ingredients: TIngredient[];
-  onOrderClick: () => void;
-};
+export const BurgerConstructor = (): React.JSX.Element => {
+  const dispatch = useAppDispatch();
+  const ingredients = useAppSelector((state) => state.burgerConstructor.ingredients);
+  const isLoading = useAppSelector((state) => state.order.isLoading);
+  const orderError = useAppSelector((state) => state.order.error);
+  const [requestError, setRequestError] = useState<string | null>(null);
 
-export const BurgerConstructor = ({
-  ingredients,
-  onOrderClick,
-}: TBurgerConstructorProps): React.JSX.Element => {
   const bun = useMemo(
     () => ingredients.find((ingredient) => ingredient.type === 'bun') ?? null,
     [ingredients]
@@ -38,6 +40,32 @@ export const BurgerConstructor = ({
 
     return bunPrice + fillingsPrice;
   }, [bun, fillings]);
+
+  const ingredientIds = useMemo(() => {
+    const fillingIds = fillings.map((ingredient) => ingredient._id);
+
+    if (!bun) {
+      return fillingIds;
+    }
+
+    return [bun._id, ...fillingIds, bun._id];
+  }, [bun, fillings]);
+
+  const handleOrderClick = async (): Promise<void> => {
+    if (ingredientIds.length === 0) {
+      setRequestError('Добавьте ингредиенты в конструктор');
+      return;
+    }
+
+    setRequestError(null);
+    dispatch(clearCurrentIngredient());
+
+    try {
+      await dispatch(createOrder(ingredientIds)).unwrap();
+    } catch (_error) {
+      setRequestError('Не удалось оформить заказ');
+    }
+  };
 
   return (
     <section className={styles.burger_constructor}>
@@ -81,10 +109,23 @@ export const BurgerConstructor = ({
           <span className="text text_type_digits-medium mr-2">{totalPrice}</span>
           <CurrencyIcon type="primary" />
         </div>
-        <Button htmlType="button" onClick={onOrderClick} type="primary" size="large">
-          Оформить заказ
+        <Button
+          htmlType="button"
+          onClick={() => {
+            void handleOrderClick();
+          }}
+          type="primary"
+          size="large"
+          disabled={isLoading}
+        >
+          {isLoading ? 'Оформляем...' : 'Оформить заказ'}
         </Button>
       </div>
+      {(requestError ?? orderError) && (
+        <p className="text text_type_main-default text_color_error mt-4">
+          {requestError ?? orderError}
+        </p>
+      )}
     </section>
   );
 };
