@@ -16,13 +16,22 @@ export const constructorSlice = createSlice({
   name: 'constructor',
   initialState,
   reducers: {
-    addIngredient: (state, action: { payload: TIngredient }) => {
-      if (action.payload.type === 'bun') {
-        state.bun = action.payload;
-        return;
-      }
+    addIngredient: {
+      reducer: (
+        state,
+        action: { payload: TIngredient | (TIngredient & { key: string }) }
+      ) => {
+        if (action.payload.type === 'bun') {
+          state.bun = action.payload;
+          return;
+        }
 
-      state.ingredients.push({ ...action.payload, key: nanoid() });
+        state.ingredients.push(action.payload as TIngredient & { key: string });
+      },
+      prepare: (ingredient: TIngredient) => ({
+        payload:
+          ingredient.type === 'bun' ? ingredient : { ...ingredient, key: nanoid() },
+      }),
     },
     removeIngredient: (state, action: { payload: string }) => {
       state.ingredients = state.ingredients.filter(
