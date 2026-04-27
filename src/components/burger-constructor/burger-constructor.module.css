@@ -6,11 +6,16 @@
   height: 100%;
   padding-bottom: 20px;
   color: var(--text-primary-color);
+  border-radius: 16px;
+  transition: background-color 0.2s ease;
+}
+
+.drop_active {
+  background-color: rgb(128 26 178 / 8%);
 }
 
 .ingredients_list {
   display: flex;
-  flex: 1;
   flex-direction: column;
   gap: 16px;
   min-height: 0;
@@ -21,10 +26,39 @@
   list-style-type: none;
 }
 
+.placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 536px;
+  min-height: 80px;
+  margin-left: 32px;
+  color: var(--text-inactive-color);
+  background: var(--background-element);
+  border-radius: var(--common-border-radius-s);
+}
+
+.placeholder p {
+  margin: 0;
+}
+
+.placeholder_top {
+  border-radius: var(--top-constructor-item-border-radius);
+}
+
+.placeholder_bottom {
+  border-radius: var(--bottom-constructor-item-border-radius);
+}
+
 .ingredient_row {
   display: flex;
   align-items: center;
   gap: 8px;
+  cursor: grab;
+}
+
+.ingredient_row:active {
+  cursor: grabbing;
 }
 
 .bun_item {

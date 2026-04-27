@@ -1,9 +1,14 @@
-import { Counter, CurrencyIcon, Tab } from '@krgaa/react-developer-burger-ui-components';
+﻿import { Counter, CurrencyIcon, Tab } from '@krgaa/react-developer-burger-ui-components';
 import { useMemo, useRef, useState } from 'react';
+import { useDrag } from 'react-dnd';
 
 import { useAppDispatch, useAppSelector } from '@services/hooks';
+import { selectIngredientCounters } from '@services/selectors/constructor-selectors';
 import { setCurrentIngredient } from '@services/slices/ingredient-details-slice';
 import { clearOrder } from '@services/slices/order-slice';
+import { DND_INGREDIENT } from '@utils/dnd';
+
+import type { TIngredient } from '@utils/types';
 
 import styles from './burger-ingredients.module.css';
 
@@ -15,9 +20,48 @@ const ingredientSections: { key: TIngredientSection; title: string }[] = [
   { key: 'sauce', title: 'Соусы' },
 ];
 
+type TIngredientCardProps = {
+  counter: number;
+  ingredient: TIngredient;
+  onClick: () => void;
+};
+
+const IngredientCard = ({
+  counter,
+  ingredient,
+  onClick,
+}: TIngredientCardProps): React.JSX.Element => {
+  const [{ opacity }, dragRef] = useDrag(() => ({
+    type: DND_INGREDIENT,
+    item: ingredient,
+    collect: (monitor): { opacity: number } => ({
+      opacity: monitor.isDragging() ? 0.4 : 1,
+    }),
+  }));
+
+  return (
+    <button
+      ref={dragRef}
+      className={styles.card_button}
+      onClick={onClick}
+      style={{ opacity }}
+      type="button"
+    >
+      {counter > 0 && <Counter count={counter} extraClass={styles.counter} />}
+      <img className={styles.image} src={ingredient.image} alt={ingredient.name} />
+      <div className={`${styles.price} mt-1 mb-1`}>
+        <span className="text text_type_digits-default mr-2">{ingredient.price}</span>
+        <CurrencyIcon type="primary" />
+      </div>
+      <p className={`${styles.name} text text_type_main-default`}>{ingredient.name}</p>
+    </button>
+  );
+};
+
 export const BurgerIngredients = (): React.JSX.Element => {
   const dispatch = useAppDispatch();
   const ingredients = useAppSelector((state) => state.ingredients.ingredients);
+  const ingredientCounter = useAppSelector(selectIngredientCounters);
   const [currentTab, setCurrentTab] = useState<TIngredientSection>('bun');
 
   const sectionRefs = useRef<Record<TIngredientSection, HTMLElement | null>>({
@@ -124,30 +168,14 @@ export const BurgerIngredients = (): React.JSX.Element => {
             <ul className={styles.cards}>
               {groupedIngredients[key].map((ingredient) => (
                 <li key={ingredient._id} className={styles.card}>
-                  <button
-                    className={styles.card_button}
+                  <IngredientCard
+                    ingredient={ingredient}
+                    counter={ingredientCounter[ingredient._id] ?? 0}
                     onClick={() => {
                       dispatch(clearOrder());
                       dispatch(setCurrentIngredient(ingredient));
                     }}
-                    type="button"
-                  >
-                    <Counter count={0} extraClass={styles.counter} />
-                    <img
-                      className={styles.image}
-                      src={ingredient.image}
-                      alt={ingredient.name}
-                    />
-                    <div className={`${styles.price} mt-1 mb-1`}>
-                      <span className="text text_type_digits-default mr-2">
-                        {ingredient.price}
-                      </span>
-                      <CurrencyIcon type="primary" />
-                    </div>
-                    <p className={`${styles.name} text text_type_main-default`}>
-                      {ingredient.name}
-                    </p>
-                  </button>
+                  />
                 </li>
               ))}
             </ul>
