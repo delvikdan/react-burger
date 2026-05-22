@@ -1,5 +1,12 @@
-import { Counter, CurrencyIcon, Tab } from '@krgaa/react-developer-burger-ui-components';
+﻿import { Counter, CurrencyIcon, Tab } from '@krgaa/react-developer-burger-ui-components';
 import { useMemo, useRef, useState } from 'react';
+import { useDrag } from 'react-dnd';
+
+import { useAppDispatch, useAppSelector } from '@services/hooks';
+import { selectIngredientCounters } from '@services/selectors/constructor-selectors';
+import { setCurrentIngredient } from '@services/slices/ingredient-details-slice';
+import { clearOrder } from '@services/slices/order-slice';
+import { DND_INGREDIENT } from '@utils/dnd';
 
 import type { TIngredient } from '@utils/types';
 
@@ -7,21 +14,54 @@ import styles from './burger-ingredients.module.css';
 
 type TIngredientSection = 'bun' | 'main' | 'sauce';
 
-type TBurgerIngredientsProps = {
-  ingredients: TIngredient[];
-  onIngredientClick: (ingredient: TIngredient) => void;
-};
-
 const ingredientSections: { key: TIngredientSection; title: string }[] = [
   { key: 'bun', title: 'Булки' },
   { key: 'main', title: 'Начинки' },
   { key: 'sauce', title: 'Соусы' },
 ];
 
-export const BurgerIngredients = ({
-  ingredients,
-  onIngredientClick,
-}: TBurgerIngredientsProps): React.JSX.Element => {
+type TIngredientCardProps = {
+  counter: number;
+  ingredient: TIngredient;
+  onClick: () => void;
+};
+
+const IngredientCard = ({
+  counter,
+  ingredient,
+  onClick,
+}: TIngredientCardProps): React.JSX.Element => {
+  const [{ opacity }, dragRef] = useDrag(() => ({
+    type: DND_INGREDIENT,
+    item: ingredient,
+    collect: (monitor): { opacity: number } => ({
+      opacity: monitor.isDragging() ? 0.4 : 1,
+    }),
+  }));
+
+  return (
+    <button
+      ref={dragRef}
+      className={styles.card_button}
+      onClick={onClick}
+      style={{ opacity }}
+      type="button"
+    >
+      {counter > 0 && <Counter count={counter} extraClass={styles.counter} />}
+      <img className={styles.image} src={ingredient.image} alt={ingredient.name} />
+      <div className={`${styles.price} mt-1 mb-1`}>
+        <span className="text text_type_digits-default mr-2">{ingredient.price}</span>
+        <CurrencyIcon type="primary" />
+      </div>
+      <p className={`${styles.name} text text_type_main-default`}>{ingredient.name}</p>
+    </button>
+  );
+};
+
+export const BurgerIngredients = (): React.JSX.Element => {
+  const dispatch = useAppDispatch();
+  const ingredients = useAppSelector((state) => state.ingredients.ingredients);
+  const ingredientCounter = useAppSelector(selectIngredientCounters);
   const [currentTab, setCurrentTab] = useState<TIngredientSection>('bun');
 
   const sectionRefs = useRef<Record<TIngredientSection, HTMLElement | null>>({
@@ -29,6 +69,12 @@ export const BurgerIngredients = ({
     main: null,
     sauce: null,
   });
+  const titleRefs = useRef<Record<TIngredientSection, HTMLHeadingElement | null>>({
+    bun: null,
+    main: null,
+    sauce: null,
+  });
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const groupedIngredients = useMemo(
     () => ({
@@ -43,6 +89,44 @@ export const BurgerIngredients = ({
     const nextTab = tab as TIngredientSection;
     setCurrentTab(nextTab);
     sectionRefs.current[nextTab]?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleContainerScroll = (): void => {
+    if (!containerRef.current) {
+      return;
+    }
+
+    const containerRect = containerRef.current.getBoundingClientRect();
+
+    const closestSection = ingredientSections.reduce(
+      (closest, section) => {
+        const titleElement = titleRefs.current[section.key];
+
+        if (!titleElement) {
+          return closest;
+        }
+
+        const titleRect = titleElement.getBoundingClientRect();
+        const distanceToTopLeft = Math.hypot(
+          titleRect.top - containerRect.top,
+          titleRect.left - containerRect.left
+        );
+
+        if (distanceToTopLeft < closest.distance) {
+          return { key: section.key, distance: distanceToTopLeft };
+        }
+
+        return closest;
+      },
+      { key: currentTab, distance: Number.POSITIVE_INFINITY } as {
+        key: TIngredientSection;
+        distance: number;
+      }
+    );
+
+    if (closestSection.key !== currentTab) {
+      setCurrentTab(closestSection.key);
+    }
   };
 
   return (
@@ -60,7 +144,11 @@ export const BurgerIngredients = ({
         ))}
       </nav>
 
-      <div className={`${styles.ingredients_scroll} custom-scroll`}>
+      <div
+        ref={containerRef}
+        onScroll={handleContainerScroll}
+        className={`${styles.ingredients_scroll} custom-scroll`}
+      >
         {ingredientSections.map(({ key, title }) => (
           <section
             key={key}
@@ -69,35 +157,25 @@ export const BurgerIngredients = ({
             }}
             className={styles.section}
           >
-            <h2 className={`${styles.section_title} text text_type_main-medium`}>
+            <h2
+              ref={(element) => {
+                titleRefs.current[key] = element;
+              }}
+              className={`${styles.section_title} text text_type_main-medium`}
+            >
               {title}
             </h2>
             <ul className={styles.cards}>
               {groupedIngredients[key].map((ingredient) => (
                 <li key={ingredient._id} className={styles.card}>
-                  <button
-                    className={styles.card_button}
+                  <IngredientCard
+                    ingredient={ingredient}
+                    counter={ingredientCounter[ingredient._id] ?? 0}
                     onClick={() => {
-                      onIngredientClick(ingredient);
+                      dispatch(clearOrder());
+                      dispatch(setCurrentIngredient(ingredient));
                     }}
-                    type="button"
-                  >
-                    <Counter count={0} extraClass={styles.counter} />
-                    <img
-                      className={styles.image}
-                      src={ingredient.image}
-                      alt={ingredient.name}
-                    />
-                    <div className={`${styles.price} mt-1 mb-1`}>
-                      <span className="text text_type_digits-default mr-2">
-                        {ingredient.price}
-                      </span>
-                      <CurrencyIcon type="primary" />
-                    </div>
-                    <p className={`${styles.name} text text_type_main-default`}>
-                      {ingredient.name}
-                    </p>
-                  </button>
+                  />
                 </li>
               ))}
             </ul>
