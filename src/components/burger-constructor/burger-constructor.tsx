@@ -1,4 +1,4 @@
-﻿import {
+import {
   Button,
   ConstructorElement,
   CurrencyIcon,
@@ -6,6 +6,7 @@
 } from '@krgaa/react-developer-burger-ui-components';
 import { useMemo, useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '@services/hooks';
 import {
@@ -89,10 +90,13 @@ const ConstructorItem = ({
 
 export const BurgerConstructor = (): React.JSX.Element => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const bun = useAppSelector((state) => state.burgerConstructor.bun);
   const fillings = useAppSelector((state) => state.burgerConstructor.ingredients);
   const isLoading = useAppSelector((state) => state.order.isLoading);
   const orderError = useAppSelector((state) => state.order.error);
+  const user = useAppSelector((state) => state.auth.user);
   const [requestError, setRequestError] = useState<string | null>(null);
 
   const [{ isOver }, dropRef] = useDrop(() => ({
@@ -126,6 +130,12 @@ export const BurgerConstructor = (): React.JSX.Element => {
   }, [bun, fillings]);
 
   const handleOrderClick = async (): Promise<void> => {
+    if (!user) {
+      setRequestError(null);
+      void navigate('/login', { state: { from: location } });
+      return;
+    }
+
     if (ingredientIds.length === 0 || !bun) {
       setRequestError('Добавьте булку и начинку в конструктор');
       return;
@@ -152,7 +162,9 @@ export const BurgerConstructor = (): React.JSX.Element => {
 
   return (
     <section
-      ref={dropRef}
+      ref={(node) => {
+        dropRef(node);
+      }}
       className={`${styles.burger_constructor} ${isOver ? styles.drop_active : ''}`}
     >
       {bun ? (
@@ -215,7 +227,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
           }}
           type="primary"
           size="large"
-          disabled={isLoading}
+          disabled={isLoading || !bun}
         >
           {isLoading ? 'Оформляем...' : 'Оформить заказ'}
         </Button>

@@ -50,7 +50,7 @@ type TPasswordResetConfirmRequest = {
 type TUpdateUserRequest = {
   email: string;
   name: string;
-  password: string;
+  password?: string;
 };
 
 export type TUser = {

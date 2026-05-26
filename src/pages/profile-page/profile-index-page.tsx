@@ -1,10 +1,17 @@
-﻿import { Button } from '@krgaa/react-developer-burger-ui-components';
+import {
+  Button,
+  EmailInput,
+  Input,
+  PasswordInput,
+} from '@krgaa/react-developer-burger-ui-components';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@services/hooks';
 import { updateUser } from '@services/slices/auth-slice';
 
 import styles from './profile-index-page.module.css';
+
+const PASSWORD_MASK = '******';
 
 export const ProfileIndexPage = (): React.JSX.Element => {
   const dispatch = useAppDispatch();
@@ -21,7 +28,7 @@ export const ProfileIndexPage = (): React.JSX.Element => {
 
     setName(user.name);
     setEmail(user.email);
-    setPassword('');
+    setPassword(PASSWORD_MASK);
   }, [user]);
 
   const isChanged = useMemo(() => {
@@ -29,7 +36,11 @@ export const ProfileIndexPage = (): React.JSX.Element => {
       return false;
     }
 
-    return name !== user.name || email !== user.email || password !== '';
+    return (
+      name !== user.name ||
+      email !== user.email ||
+      (password !== '' && password !== PASSWORD_MASK)
+    );
   }, [email, name, password, user]);
 
   const handleCancel = (): void => {
@@ -39,7 +50,7 @@ export const ProfileIndexPage = (): React.JSX.Element => {
 
     setName(user.name);
     setEmail(user.email);
-    setPassword('');
+    setPassword(PASSWORD_MASK);
   };
 
   const handleSubmit = async (
@@ -51,51 +62,51 @@ export const ProfileIndexPage = (): React.JSX.Element => {
       updateUser({
         name,
         email,
-        password,
+        password: password === PASSWORD_MASK ? undefined : password,
       })
     );
 
-    setPassword('');
+    setPassword(PASSWORD_MASK);
   };
 
   return (
     <div>
-      <h1 className={`${styles.title} text text_type_main-large`}>Профиль</h1>
-
       <form className={styles.form} onSubmit={(event) => void handleSubmit(event)}>
-        <input
-          className={styles.input}
-          type="text"
+        <Input
           name="name"
           placeholder="Имя"
-          value={name}
+          size="default"
           onChange={(event) => {
             setName(event.target.value);
           }}
-          required
+          type="text"
+          value={name}
+          icon="EditIcon"
         />
 
-        <input
-          className={styles.input}
-          type="email"
+        <EmailInput
+          isIcon
           name="email"
-          placeholder="E-mail"
-          value={email}
           onChange={(event) => {
             setEmail(event.target.value);
           }}
-          required
+          placeholder="Логин"
+          value={email}
         />
 
-        <input
-          className={styles.input}
-          type="password"
+        <PasswordInput
+          icon="EditIcon"
           name="password"
-          placeholder="Новый пароль"
-          value={password}
+          size="default"
+          onFocus={() => {
+            if (password === PASSWORD_MASK) {
+              setPassword('');
+            }
+          }}
           onChange={(event) => {
             setPassword(event.target.value);
           }}
+          value={password}
         />
 
         {isChanged && (

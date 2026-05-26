@@ -1,0 +1,32 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.errorText {
+  color: var(--colors-interface-error);
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer a {
+  color: var(--colors-interface-accent);
+  text-decoration: none;
+}
+
+.form input:-webkit-autofill,
+.form input:-webkit-autofill:hover,
+.form input:-webkit-autofill:focus,
+.form input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--text-primary-color);
+  box-shadow: 0 0 0 1000px var(--background-element) inset;
+  transition: background-color 9999s ease-out;
+}

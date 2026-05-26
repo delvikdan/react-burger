@@ -1,7 +1,8 @@
-﻿import { Button } from '@krgaa/react-developer-burger-ui-components';
+import { EmailInput } from '@krgaa/react-developer-burger-ui-components';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
+import { Form } from '@components/form/form';
 import { requestPasswordResetApi } from '@services/burger-api';
 
 import styles from './forgot-password-page.module.css';
@@ -37,36 +38,28 @@ export const ForgotPasswordPage = (): React.JSX.Element => {
   };
 
   return (
-    <main className={`${styles.page} ${styles.authLayout}`}>
-      <h1 className={`${styles.title} text text_type_main-large`}>
-        Восстановление пароля
-      </h1>
-
-      <form className={styles.form} onSubmit={(event) => void handleSubmit(event)}>
-        <input
-          className={styles.input}
-          type="email"
+    <main className={styles.authLayout}>
+      <Form
+        title="Восстановление пароля"
+        submitText="Восстановить"
+        submittingText="Отправляем..."
+        isSubmitting={isLoading}
+        error={error}
+        onSubmit={(event) => void handleSubmit(event)}
+        footer={
+          <span>
+            Вспомнили пароль? <Link to="/login">Войти</Link>
+          </span>
+        }
+      >
+        <EmailInput
           name="email"
-          placeholder="Укажите e-mail"
-          value={email}
           onChange={(event) => {
             setEmail(event.target.value);
           }}
-          required
+          value={email}
         />
-
-        <Button htmlType="submit" type="primary" size="large" disabled={isLoading}>
-          {isLoading ? 'Отправляем...' : 'Восстановить'}
-        </Button>
-      </form>
-
-      {error && (
-        <p
-          className={`${styles.description} ${styles.errorText} text text_type_main-default mt-6`}
-        >
-          {error}
-        </p>
-      )}
+      </Form>
     </main>
   );
 };

@@ -3,7 +3,7 @@
   width: 100%;
   max-width: 1240px;
   margin: 0 auto;
-  padding: 80px 20px 0;
+  padding: 120px 0;
   font-family: 'JetBrains Mono', monospace;
 }
 
@@ -34,6 +34,19 @@
 }
 
 .logoutButton {
-  justify-content: flex-start;
-  padding-left: 0;
+  padding: 16px 0;
+  color: var(--text-inactive-color);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.logoutButton:disabled {
+  cursor: default;
+}
+
+.profileDescription {
+  color: var(--text-inactive-color);
+  opacity: 0.4;
 }

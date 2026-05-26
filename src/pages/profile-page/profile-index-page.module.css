@@ -1,7 +1,3 @@
-.title {
-  margin: 0 0 24px;
-}
-
 .description {
   margin: 0;
 }
@@ -12,24 +8,6 @@
   gap: 24px;
   width: 100%;
   max-width: 480px;
-}
-
-.input {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 21px 24px;
-  color: var(--text-primary-color);
-  font: inherit;
-  background: var(--background-element);
-  border: 1px solid var(--colors-interface-accent);
-  border-radius: 99px;
-}
-
-.input.input:autofill,
-input:autofill:hover,
-input:autofill:focus,
-input:autofill:active {
-  box-shadow: none !important;
 }
 
 .errorText {

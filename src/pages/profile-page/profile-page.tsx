@@ -1,4 +1,3 @@
-﻿import { Button } from '@krgaa/react-developer-burger-ui-components';
 import { NavLink, Outlet } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '@services/hooks';
@@ -22,18 +21,19 @@ export const ProfilePage = (): React.JSX.Element => {
         <NavLink to="/profile/orders" className={getLinkClassName}>
           История заказов
         </NavLink>
-        <Button
-          htmlType="button"
-          type="secondary"
-          size="medium"
+        <button
+          type="button"
           disabled={isLoading}
-          extraClass={styles.logoutButton}
+          className={`${styles.logoutButton} text text_type_main-medium pt-4 pb-4`}
           onClick={() => {
             void dispatch(logoutUser());
           }}
         >
           Выйти
-        </Button>
+        </button>
+        <p className={`${styles.profileDescription} text text_type_main-default mt-20`}>
+          В этом разделе вы можете изменить свои персональные данные
+        </p>
       </nav>
       <section className={styles.profileContent}>
         <Outlet />

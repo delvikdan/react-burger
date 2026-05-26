@@ -1,7 +1,8 @@
-﻿import { Button } from '@krgaa/react-developer-burger-ui-components';
+import { Input, PasswordInput } from '@krgaa/react-developer-burger-ui-components';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
+import { Form } from '@components/form/form';
 import { resetPasswordApi } from '@services/burger-api';
 
 import styles from './reset-password-page.module.css';
@@ -46,25 +47,31 @@ export const ResetPasswordPage = (): React.JSX.Element => {
   };
 
   return (
-    <main className={`${styles.page} ${styles.authLayout}`}>
-      <h1 className={`${styles.title} text text_type_main-large`}>Сброс пароля</h1>
-
-      <form className={styles.form} onSubmit={(event) => void handleSubmit(event)}>
-        <input
-          className={styles.input}
-          type="password"
+    <main className={styles.authLayout}>
+      <Form
+        title="Восстановление пароля"
+        submitText="Сохранить"
+        submittingText="Сохраняем..."
+        isSubmitting={isLoading}
+        error={error}
+        onSubmit={(event) => void handleSubmit(event)}
+        footer={
+          <span>
+            Вспомнили пароль? <Link to="/login">Войти</Link>
+          </span>
+        }
+      >
+        <PasswordInput
+          icon="ShowIcon"
           name="password"
           placeholder="Введите новый пароль"
-          value={password}
           onChange={(event) => {
             setPassword(event.target.value);
           }}
-          minLength={6}
-          required
+          value={password}
         />
 
-        <input
-          className={styles.input}
+        <Input
           type="text"
           name="token"
           placeholder="Введите код из письма"
@@ -72,21 +79,8 @@ export const ResetPasswordPage = (): React.JSX.Element => {
           onChange={(event) => {
             setToken(event.target.value);
           }}
-          required
         />
-
-        <Button htmlType="submit" type="primary" size="large" disabled={isLoading}>
-          {isLoading ? 'Сохраняем...' : 'Сохранить'}
-        </Button>
-      </form>
-
-      {error && (
-        <p
-          className={`${styles.description} ${styles.errorText} text text_type_main-default mt-6`}
-        >
-          {error}
-        </p>
-      )}
+      </Form>
     </main>
   );
 };

@@ -28,7 +28,7 @@ type TLoginPayload = {
 type TUpdateUserPayload = {
   email: string;
   name: string;
-  password: string;
+  password?: string;
 };
 
 type TAuthState = {
