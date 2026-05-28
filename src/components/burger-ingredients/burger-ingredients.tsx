@@ -1,10 +1,10 @@
-﻿import { Counter, CurrencyIcon, Tab } from '@krgaa/react-developer-burger-ui-components';
-import { useMemo, useRef, useState } from 'react';
+import { Counter, CurrencyIcon, Tab } from '@krgaa/react-developer-burger-ui-components';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDrag } from 'react-dnd';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '@services/hooks';
 import { selectIngredientCounters } from '@services/selectors/constructor-selectors';
-import { setCurrentIngredient } from '@services/slices/ingredient-details-slice';
 import { clearOrder } from '@services/slices/order-slice';
 import { DND_INGREDIENT } from '@utils/dnd';
 
@@ -31,6 +31,7 @@ const IngredientCard = ({
   ingredient,
   onClick,
 }: TIngredientCardProps): React.JSX.Element => {
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [{ opacity }, dragRef] = useDrag(() => ({
     type: DND_INGREDIENT,
     item: ingredient,
@@ -39,9 +40,13 @@ const IngredientCard = ({
     }),
   }));
 
+  useEffect(() => {
+    dragRef(buttonRef);
+  }, [dragRef]);
+
   return (
     <button
-      ref={dragRef}
+      ref={buttonRef}
       className={styles.card_button}
       onClick={onClick}
       style={{ opacity }}
@@ -60,6 +65,8 @@ const IngredientCard = ({
 
 export const BurgerIngredients = (): React.JSX.Element => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const ingredients = useAppSelector((state) => state.ingredients.ingredients);
   const ingredientCounter = useAppSelector(selectIngredientCounters);
   const [currentTab, setCurrentTab] = useState<TIngredientSection>('bun');
@@ -173,7 +180,9 @@ export const BurgerIngredients = (): React.JSX.Element => {
                     counter={ingredientCounter[ingredient._id] ?? 0}
                     onClick={() => {
                       dispatch(clearOrder());
-                      dispatch(setCurrentIngredient(ingredient));
+                      void navigate(`/ingredients/${ingredient._id}`, {
+                        state: { backgroundLocation: location },
+                      });
                     }}
                   />
                 </li>

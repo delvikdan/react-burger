@@ -1,3 +1,5 @@
+﻿import { useParams } from 'react-router-dom';
+
 import { useAppSelector } from '@services/hooks';
 
 import styles from './ingredient-details.module.css';
@@ -6,14 +8,17 @@ const nutrientItems: {
   key: 'calories' | 'proteins' | 'fat' | 'carbohydrates';
   title: string;
 }[] = [
-  { key: 'calories', title: 'Калории,ккал' },
+  { key: 'calories', title: 'Калории, ккал' },
   { key: 'proteins', title: 'Белки, г' },
   { key: 'fat', title: 'Жиры, г' },
   { key: 'carbohydrates', title: 'Углеводы, г' },
 ];
 
 export const IngredientDetails = (): React.JSX.Element | null => {
-  const ingredient = useAppSelector((state) => state.ingredientDetails.ingredient);
+  const { id } = useParams();
+  const ingredient = useAppSelector((state) =>
+    state.ingredients.ingredients.find((item) => item._id === id)
+  );
 
   if (!ingredient) {
     return null;

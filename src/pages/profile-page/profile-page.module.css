@@ -1,0 +1,52 @@
+.page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 120px 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.profileLayout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  align-items: start;
+  gap: 48px;
+}
+
+.profileMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profileLink {
+  color: var(--text-inactive-color);
+  text-decoration: none;
+}
+
+.profileLinkActive {
+  color: var(--text-primary-color);
+}
+
+.profileContent {
+  min-height: 200px;
+}
+
+.logoutButton {
+  padding: 16px 0;
+  color: var(--text-inactive-color);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.logoutButton:disabled {
+  cursor: default;
+}
+
+.profileDescription {
+  color: var(--text-inactive-color);
+  opacity: 0.4;
+}

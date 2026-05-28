@@ -1,0 +1,21 @@
+.description {
+  margin: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.errorText {
+  color: var(--colors-interface-error);
+}
+
+.profileActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}

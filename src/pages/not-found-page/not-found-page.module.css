@@ -1,0 +1,16 @@
+.page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 80px 20px 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.title {
+  margin: 0 0 24px;
+}
+
+.description {
+  margin: 0;
+}
