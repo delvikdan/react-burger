@@ -29,7 +29,7 @@ export const ProfilePage = (): React.JSX.Element => {
             void dispatch(logoutUser());
           }}
         >
-          Выйти
+          Выход
         </button>
         <p className={`${styles.profileDescription} text text_type_main-default mt-20`}>
           В этом разделе вы можете изменить свои персональные данные

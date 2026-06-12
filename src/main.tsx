@@ -10,6 +10,7 @@ import { ForgotPasswordPage } from '@pages/forgot-password-page/forgot-password-
 import { Home } from '@pages/home/home';
 import { LoginPage } from '@pages/login-page/login-page';
 import { NotFoundPage } from '@pages/not-found-page/not-found-page';
+import { OrderInfoPage } from '@pages/order-info-page/order-info-page';
 import { ProfileOrderPage } from '@pages/profile-order-page/profile-order-page';
 import { ProfileIndexPage } from '@pages/profile-page/profile-index-page';
 import { ProfilePage } from '@pages/profile-page/profile-page';
@@ -43,12 +44,20 @@ const router = createBrowserRouter([
             element: <ProfilePage />,
             children: [
               { index: true, element: <ProfileIndexPage /> },
-              { path: 'orders', element: <ProfileOrderPage /> },
+              {
+                path: 'orders',
+                element: <ProfileOrderPage />,
+                children: [{ path: ':id', element: <OrderInfoPage source="profile" /> }],
+              },
             ],
           },
         ],
       },
-      { path: 'feed', element: <FeedPage /> },
+      {
+        path: 'feed',
+        element: <FeedPage />,
+        children: [{ path: ':id', element: <OrderInfoPage source="feed" /> }],
+      },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

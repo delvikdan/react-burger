@@ -1,6 +1,6 @@
 ﻿import { BURGER_API_URL } from '@utils/constants';
 
-import type { TIngredient } from '@utils/types';
+import type { TIngredient, TOrder } from '@utils/types';
 
 type TBaseApiResponse = {
   success: boolean;
@@ -21,6 +21,11 @@ type TCreateOrderApiResponse = {
   order: {
     number: number;
   };
+};
+
+type TOrderByNumberApiResponse = {
+  success: boolean;
+  orders: TOrder[];
 };
 
 type TRegisterRequest = {
@@ -204,6 +209,14 @@ export const createOrderApi = async ({
   });
 
   return data.order.number;
+};
+
+export const fetchOrderByNumberApi = async (
+  orderNumber: string
+): Promise<TOrder | null> => {
+  const data = await request<TOrderByNumberApiResponse>(`/orders/${orderNumber}`);
+
+  return data.orders[0] ?? null;
 };
 
 export const registerUserApi = async ({
