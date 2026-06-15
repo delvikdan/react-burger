@@ -1,0 +1,100 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  color: inherit;
+  text-decoration: none;
+  background: #1c1c21;
+  border-radius: 40px;
+  box-shadow: 0 4px 24px rgb(0 0 0 / 12%);
+}
+
+.header,
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.status {
+  margin: 0;
+}
+
+.statusDone {
+  color: #0cc;
+}
+
+.ingredients {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ingredientItem {
+  position: relative;
+  margin-right: -16px;
+}
+
+.ingredientCircle {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  background:
+    linear-gradient(#131316, #131316) padding-box,
+    linear-gradient(63deg, #801ab2, #4c4cff) border-box;
+  border: 2px solid transparent;
+  border-radius: 50%;
+}
+
+.ingredientImage {
+  display: block;
+  width: 112px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(28 28 33 / 60%);
+}
+
+.price {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (width <= 768px) {
+  .card {
+    padding: 20px;
+    border-radius: 28px;
+  }
+
+  .ingredientCircle {
+    width: 48px;
+    height: 48px;
+  }
+
+  .ingredientImage {
+    width: 84px;
+    height: 42px;
+  }
+}

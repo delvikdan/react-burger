@@ -5,18 +5,17 @@
   z-index: 11;
   width: 720px;
   max-width: calc(100vw - 40px);
+  overflow: hidden;
   background-color: var(--background);
   border-radius: 40px;
   transform: translate(-50%, -50%);
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .close_button {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  z-index: 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -30,4 +29,17 @@
 .content {
   display: flex;
   flex-direction: column;
+}
+
+.contentWithTitle {
+  padding: 40px 40px 60px;
+}
+
+.contentWithoutTitle {
+  padding: 40px;
+}
+
+.title {
+  margin: 0 48px 36px 0;
+  text-align: center;
 }

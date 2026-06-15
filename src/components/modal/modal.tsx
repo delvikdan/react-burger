@@ -9,7 +9,7 @@ import styles from './modal.module.css';
 const modalsRoot = document.getElementById('modals')!;
 
 type TModalProps = {
-  title: string;
+  title?: string;
   children: React.ReactNode;
   onClose: () => void;
 };
@@ -33,7 +33,7 @@ export const Modal = ({ title, children, onClose }: TModalProps): React.JSX.Elem
     <>
       <ModalOverlay onClose={onClose} />
       <section
-        aria-labelledby="modal-title"
+        aria-labelledby={title ? 'modal-title' : undefined}
         aria-modal={true}
         className={styles.modal}
         onClick={(event) => {
@@ -41,20 +41,26 @@ export const Modal = ({ title, children, onClose }: TModalProps): React.JSX.Elem
         }}
         role="dialog"
       >
-        <header className={`${styles.header} p-10 pb-0`}>
-          <h2 id="modal-title" className="text text_type_main-large">
-            {title}
-          </h2>
-          <button
-            aria-label="Close modal window"
-            className={styles.close_button}
-            onClick={onClose}
-            type="button"
-          >
-            <CloseIcon type="primary" />
-          </button>
-        </header>
-        <div className={`${styles.content} p-10`}>{children}</div>
+        <button
+          aria-label="Close modal window"
+          className={styles.close_button}
+          onClick={onClose}
+          type="button"
+        >
+          <CloseIcon type="primary" />
+        </button>
+        <div
+          className={`${styles.content} ${
+            title ? styles.contentWithTitle : styles.contentWithoutTitle
+          }`}
+        >
+          {title && (
+            <h2 id="modal-title" className={`${styles.title} text text_type_main-large`}>
+              {title}
+            </h2>
+          )}
+          {children}
+        </div>
       </section>
     </>,
     modalsRoot

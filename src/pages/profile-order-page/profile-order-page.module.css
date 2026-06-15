@@ -1,7 +1,10 @@
-﻿.title {
-  margin: 0 0 24px;
+.section {
+  min-width: 0;
 }
 
-.description {
-  margin: 0;
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 320px;
 }
