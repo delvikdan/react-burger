@@ -46,6 +46,7 @@ const IngredientCard = ({
 
   return (
     <button
+      data-testid={`ingredient-card-${ingredient._id}`}
       ref={buttonRef}
       className={styles.card_button}
       onClick={onClick}

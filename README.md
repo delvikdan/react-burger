@@ -38,3 +38,4 @@
 ```
 
 ПРИМЕЧАНИЕ ДЛЯ ЧЕТВЁРТОГО СПРИНТА: работа изначально писалась на TypeScript.
+ССЫЛКА НА ДЕПЛОЙ: https://react-burger-gamma-eight.vercel.app/
