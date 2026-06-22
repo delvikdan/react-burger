@@ -71,6 +71,7 @@ const ConstructorItem = ({
 
   return (
     <li
+      data-testid="constructor-item"
       ref={itemRef}
       className={styles.ingredient_row}
       style={{ opacity: isDragging ? 0.5 : 1 }}
@@ -162,6 +163,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
 
   return (
     <section
+      data-testid="constructor-dropzone"
       ref={(node) => {
         dropRef(node);
       }}
@@ -182,7 +184,10 @@ export const BurgerConstructor = (): React.JSX.Element => {
         </div>
       )}
 
-      <ul className={`${styles.ingredients_list} custom-scroll`}>
+      <ul
+        data-testid="constructor-ingredients"
+        className={`${styles.ingredients_list} custom-scroll`}
+      >
         {fillings.length > 0 ? (
           fillings.map((ingredient, index) => (
             <ConstructorItem
@@ -221,6 +226,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
           <CurrencyIcon type="primary" />
         </div>
         <Button
+          data-testid="create-order-button"
           htmlType="button"
           onClick={() => {
             void handleOrderClick();

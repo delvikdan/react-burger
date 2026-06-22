@@ -36,6 +36,7 @@ export const Modal = ({ title, children, onClose }: TModalProps): React.JSX.Elem
         aria-labelledby={title ? 'modal-title' : undefined}
         aria-modal={true}
         className={styles.modal}
+        data-testid="modal"
         onClick={(event) => {
           event.stopPropagation();
         }}
@@ -44,6 +45,7 @@ export const Modal = ({ title, children, onClose }: TModalProps): React.JSX.Elem
         <button
           aria-label="Close modal window"
           className={styles.close_button}
+          data-testid="modal-close-button"
           onClick={onClose}
           type="button"
         >
